@@ -1,0 +1,7 @@
+[package]
+name = "banana-ecs"
+version = "0.1.0"
+authors = ["slackmagic <laurent.pietrzyk@gmail.com>"]
+edition = "2018"
+
+[dependencies]
