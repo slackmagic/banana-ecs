@@ -46,13 +46,19 @@ mod component_tests {
     }
 
     #[test]
-    fn create_component() {
+    fn should_create_component() {
         let comp: Component<u32> = Component::new(123);
         assert_eq!(comp.count(), 0);
     }
 
     #[test]
-    fn add_new_items() {
+    fn should_get_component_id() {
+        let comp: Component<u32> = Component::new(123);
+        assert_eq!(comp.get_id(), 123);
+    }
+
+    #[test]
+    fn should_add_new_items() {
         let comp: &mut Component<u32> = &mut Component::new(123);
         comp.add(1, 456);
         comp.add(2, 789);
@@ -61,7 +67,7 @@ mod component_tests {
     }
 
     #[test]
-    fn can_edit_items() {
+    fn should_edit_items() {
         let comp: &mut Component<MyStruct> = &mut Component::new(123);
         let test_entity = MyStruct {
             title: "OK".to_owned(),
@@ -77,7 +83,19 @@ mod component_tests {
         entity.title = "NEW VALUE".to_owned();
         entity.value = entity.value + 1;
         let updated_entity: &mut MyStruct = &mut comp.get(1);
+
         assert_eq!(updated_entity.title, "NEW VALUE");
         assert_eq!(updated_entity.value, 11);
+    }
+
+    #[test]
+    fn should_delete_item() {
+        let comp: &mut Component<u32> = &mut Component::new(123);
+        comp.add(1, 456);
+
+        assert_eq!(1, comp.count());
+        comp.remove(1);
+
+        assert_eq!(0, comp.count());
     }
 }
