@@ -18,6 +18,7 @@ impl World {
     }
 
     pub fn get_new_entity_id(&mut self) -> u32 {
+        //TODO SEARCH FIRST ONE
         self.current_entity_id += 1;
         self.current_entity_id
     }
@@ -27,6 +28,7 @@ impl World {
     }
 
     pub fn count_entities(&self) -> u32 {
+        //WHERE ENTITY MASK <> 0
         self.current_entity_id
     }
 }
