@@ -4,18 +4,20 @@ const MAX_ENTS: usize = 200;
 const EMPTY: u32 = 0;
 const RESERVED: u32 = 1 << 0;
 
-struct EntityFactory {
+pub struct EntityFactory<T> {
     entity_masks: [u32; MAX_ENTS],
     reusable_space: Vec<u32>,
     entities_number: u32,
+    pub parts: T,
 }
 
-impl EntityFactory {
-    pub fn new() -> EntityFactory {
+impl<T> EntityFactory<T> {
+    pub fn new(parts: T) -> EntityFactory<T> {
         EntityFactory {
             entities_number: 0,
             reusable_space: Vec::new(),
             entity_masks: [EMPTY as u32; MAX_ENTS],
+            parts: parts,
         }
     }
 
@@ -64,7 +66,7 @@ mod world_tests {
 
     #[test]
     fn should_add_entities() {
-        let mut factory = EntityFactory::new();
+        let mut factory: EntityFactory<u32> = EntityFactory::new(1);
 
         println!("{}", factory.add_entity().unwrap());
         println!("{}", factory.add_entity().unwrap());
@@ -75,7 +77,7 @@ mod world_tests {
 
     #[test]
     fn should_add_entities_complex() {
-        let mut factory = EntityFactory::new();
+        let mut factory: EntityFactory<u32> = EntityFactory::new(1);
 
         for _ in 0..50 {
             factory.add_entity();
@@ -96,7 +98,7 @@ mod world_tests {
 
     #[test]
     fn should_count_entities() {
-        let mut factory = EntityFactory::new();
+        let mut factory: EntityFactory<u32> = EntityFactory::new(1);
         assert_eq!(factory.count_entities(), 0);
     }
 

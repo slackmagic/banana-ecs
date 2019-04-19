@@ -1,19 +1,19 @@
 use std::collections::HashMap;
 
 pub struct ComponentStore<T> {
-    id: u32,
+    id: usize,
     store: HashMap<u32, Box<T>>,
 }
 
 impl<T> ComponentStore<T> {
-    pub fn new(id: u32) -> ComponentStore<T> {
+    pub fn new(id: usize) -> ComponentStore<T> {
         ComponentStore {
             id: id,
             store: HashMap::new(),
         }
     }
 
-    pub fn get_id(&self) -> u32 {
+    pub fn get_id(&self) -> usize {
         self.id
     }
 
