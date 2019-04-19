@@ -1,4 +1,3 @@
-use crate::component::Component;
 use std::collections::HashMap;
 
 const MAX_ENTS: usize = 200;

@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-pub struct Component<T> {
+pub struct ComponentStore<T> {
     id: u32,
     store: HashMap<u32, Box<T>>,
 }
 
-impl<T> Component<T> {
-    pub fn new(id: u32) -> Component<T> {
-        Component {
+impl<T> ComponentStore<T> {
+    pub fn new(id: u32) -> ComponentStore<T> {
+        ComponentStore {
             id: id,
             store: HashMap::new(),
         }
@@ -38,7 +38,7 @@ impl<T> Component<T> {
 #[cfg(test)]
 mod component_tests {
 
-    use crate::component::Component;
+    use super::ComponentStore;
 
     struct MyStruct {
         pub title: String,
@@ -47,42 +47,42 @@ mod component_tests {
 
     #[test]
     fn should_create_component() {
-        let comp: Component<u32> = Component::new(123);
-        assert_eq!(comp.count(), 0);
+        let store: ComponentStore<u32> = ComponentStore::new(123);
+        assert_eq!(store.count(), 0);
     }
 
     #[test]
     fn should_get_component_id() {
-        let comp: Component<u32> = Component::new(123);
-        assert_eq!(comp.get_id(), 123);
+        let store: ComponentStore<u32> = ComponentStore::new(123);
+        assert_eq!(store.get_id(), 123);
     }
 
     #[test]
     fn should_add_new_items() {
-        let comp: &mut Component<u32> = &mut Component::new(123);
-        comp.add(1, 456);
-        comp.add(2, 789);
+        let store: &mut ComponentStore<u32> = &mut ComponentStore::new(123);
+        store.add(1, 456);
+        store.add(2, 789);
 
-        assert_eq!(2, comp.count());
+        assert_eq!(2, store.count());
     }
 
     #[test]
     fn should_edit_items() {
-        let comp: &mut Component<MyStruct> = &mut Component::new(123);
+        let store: &mut ComponentStore<MyStruct> = &mut ComponentStore::new(123);
         let test_entity = MyStruct {
             title: "OK".to_owned(),
             value: 10,
         };
 
-        comp.add(1, test_entity);
+        store.add(1, test_entity);
 
-        let entity: &mut MyStruct = &mut comp.get(1);
+        let entity: &mut MyStruct = &mut store.get(1);
         assert_eq!(entity.title, "OK");
         assert_eq!(entity.value, 10);
 
         entity.title = "NEW VALUE".to_owned();
         entity.value = entity.value + 1;
-        let updated_entity: &mut MyStruct = &mut comp.get(1);
+        let updated_entity: &mut MyStruct = &mut store.get(1);
 
         assert_eq!(updated_entity.title, "NEW VALUE");
         assert_eq!(updated_entity.value, 11);
@@ -90,12 +90,12 @@ mod component_tests {
 
     #[test]
     fn should_delete_item() {
-        let comp: &mut Component<u32> = &mut Component::new(123);
-        comp.add(1, 456);
+        let store: &mut ComponentStore<u32> = &mut ComponentStore::new(123);
+        store.add(1, 456);
 
-        assert_eq!(1, comp.count());
-        comp.remove(1);
+        assert_eq!(1, store.count());
+        store.remove(1);
 
-        assert_eq!(0, comp.count());
+        assert_eq!(0, store.count());
     }
 }
