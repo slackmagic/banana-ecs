@@ -111,6 +111,27 @@ mod system_tests {
 
         sys.set(ent, pos);
         sys.set(ent, vel);
+
         assert_eq!(sys.count_entities(), 1);
+    }
+
+    #[test]
+    fn should_get_entity_component() {
+        let mut sys: System = System::new();
+        let ent = sys.new_entity();
+
+        let pos = Position { x: 0, y: 0 };
+        let vel = Velocity { vel: 0.2 };
+
+        sys.set(ent, pos);
+        sys.set(ent, vel);
+        assert_eq!(sys.count_entities(), 1);
+
+        let ret_pos = sys.get::<Position>(ent).unwrap().clone();
+        let ret_vel = sys.get::<Velocity>(ent).unwrap().clone();
+
+        assert_eq!(ret_pos.x, 0);
+        assert_eq!(ret_pos.y, 0);
+        assert_eq!(ret_vel.vel, 0.2);
     }
 }
