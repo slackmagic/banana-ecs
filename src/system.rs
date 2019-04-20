@@ -8,6 +8,7 @@ use std::any::{Any, TypeId};
 use std::collections::HashMap;
 
 const MAX_ENTS: usize = 200;
+const UNDEFINED: usize = 1;
 
 struct System {
     current_id: u32,
@@ -41,25 +42,47 @@ impl System {
     pub fn set<C: Component>(&mut self, entity: Entity, component: C) {
         let type_of_c = &TypeId::of::<C>();
 
+        //Check if a related typed store exists.
         if !self.contains_type_id(type_of_c) {
-            self.components
-                //TODO: Define id
-                .insert(TypeId::of::<C>(), Box::new(ComponentStore::<C>::new(1)));
+            //TODO: Define id
+            self.components.insert(
+                TypeId::of::<C>(),
+                Box::new(ComponentStore::<C>::new(UNDEFINED)),
+            );
         }
 
-        let store: Option<&mut ComponentStore<C>> = self
-            .components
-            .get_mut(&TypeId::of::<C>())
-            .map(|store: &mut Box<Any>| store.downcast_mut::<ComponentStore<C>>().expect(""));
+        let store: &mut ComponentStore<C> = self.get_store::<C>();
 
-        store.unwrap().set(entity.id, component);
+        //Insert the component into the related store.
+        store.set(entity.id, component);
+    }
+
+    pub fn get<C: Component>(&mut self, entity: Entity) -> Option<&mut C> {
+        let type_of_c = &TypeId::of::<C>();
+
+        //Check if a related typed store exists.
+        if !self.contains_type_id(type_of_c) {
+            return None;
+        }
+
+        let store: &mut ComponentStore<C> = self.get_store::<C>();
+
+        //Get the component from the related store.
+        Some(store.get(entity.id))
     }
 
     fn contains_type_id(&self, id: &TypeId) -> bool {
         self.components.contains_key(id)
     }
 
-    pub fn get(&mut self) {}
+    fn get_store<C: Component>(&mut self) -> &mut ComponentStore<C> {
+        //TODO: Safely Unwrap
+        //TODO: Manage error
+        self.components
+            .get_mut(&TypeId::of::<C>())
+            .map(|store: &mut Box<Any>| store.downcast_mut::<ComponentStore<C>>().expect(""))
+            .unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -82,6 +105,7 @@ mod system_tests {
     fn should_set_entity_component() {
         let mut sys: System = System::new();
         let ent = sys.new_entity();
+
         let pos = Position { x: 0, y: 0 };
         let vel = Velocity { vel: 0.2 };
 
