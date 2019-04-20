@@ -1,6 +1,5 @@
-use crate::component::Component;
 use crate::component_store::ComponentStore;
-use crate::entity::Entity;
+use crate::{Component, Entity};
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
 

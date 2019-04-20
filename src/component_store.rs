@@ -1,4 +1,4 @@
-use crate::component::Component;
+use crate::Component;
 use std::collections::HashMap;
 
 pub struct ComponentStore<T> {

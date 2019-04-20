@@ -1,9 +1,8 @@
-use crate::component::Component;
 use crate::component_map::ComponentMap;
 use crate::component_store::ComponentStore;
 use crate::components_lib::position::Position;
 use crate::components_lib::velocity::Velocity;
-use crate::entity::Entity;
+use crate::{Component, Entity};
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
 
