@@ -18,11 +18,12 @@ impl<T> ComponentStore<T> {
         self.id
     }
 
-    pub fn set(&mut self, entity_id: u32, entity: T) {
-        self.store.insert(entity_id, Box::new(entity));
+    pub fn set(&mut self, entity_id: u32, entity: T) -> T {
+        *self.store.insert(entity_id, Box::new(entity)).unwrap()
     }
 
     pub fn get(&mut self, entity_id: u32) -> &mut T {
+        //TODO: Send Option
         let boxed_entity = self.store.get_mut(&entity_id).unwrap();
         &mut *boxed_entity
     }
