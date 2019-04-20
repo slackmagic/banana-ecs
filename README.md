@@ -8,7 +8,7 @@
 
 
 ### EntityFactory: 
-- Manage and organize of the Entities ID store table.
+- Manage and organize the Entities ID store table.
 - Main rules: 
     - A table space can be reused.
     - An ID cannot be reused (_TODO_).

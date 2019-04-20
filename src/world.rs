@@ -1,17 +1,21 @@
 use crate::component_store::ComponentStore;
 
+pub const POSITION: u32 = 1 << 0;
+pub const VELOCITY: u32 = 1 << 1;
+pub const INPUT: u32 = 1 << 4;
+
 struct World {
-    pub firstStore: ComponentStore<u128>,
-    pub secondStore: ComponentStore<String>,
-    pub thirdStore: ComponentStore<Vec<u32>>,
+    pub position: ComponentStore<u128>,
+    pub velocity: ComponentStore<String>,
+    pub input: ComponentStore<Vec<u32>>,
 }
 
 impl World {
     pub fn new() -> World {
         World {
-            firstStore: ComponentStore::new(1 as usize),
-            secondStore: ComponentStore::new(2 as usize),
-            thirdStore: ComponentStore::new(3 as usize),
+            position: ComponentStore::new(1 as usize),
+            velocity: ComponentStore::new(2 as usize),
+            input: ComponentStore::new(3 as usize),
         }
     }
 }
@@ -26,8 +30,7 @@ mod world_tests {
             entity_factory::EntityFactory::new(world);
 
         //TODO DEFINE PARTS
-        //DEFINE CONTENT
-        factory.parts.firstStore.add(1, 2 as u128);
+        factory.parts.position.add(1, 2 as u128);
 
         factory.add_entity();
         factory.delete_entity(0);
