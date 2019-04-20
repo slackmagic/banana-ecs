@@ -1,3 +1,4 @@
+use crate::component::Component;
 use std::collections::HashMap;
 
 pub struct ComponentStore<T> {
@@ -17,7 +18,7 @@ impl<T> ComponentStore<T> {
         self.id
     }
 
-    pub fn add(&mut self, entity_id: u32, entity: T) {
+    pub fn set(&mut self, entity_id: u32, entity: T) {
         self.store.insert(entity_id, Box::new(entity));
     }
 
@@ -60,8 +61,8 @@ mod component_tests {
     #[test]
     fn should_add_new_items() {
         let store: &mut ComponentStore<u32> = &mut ComponentStore::new(123);
-        store.add(1, 456);
-        store.add(2, 789);
+        store.set(1, 456);
+        store.set(2, 789);
 
         assert_eq!(2, store.count());
     }
@@ -74,7 +75,7 @@ mod component_tests {
             value: 10,
         };
 
-        store.add(1, test_entity);
+        store.set(1, test_entity);
 
         let entity: &mut MyStruct = &mut store.get(1);
         assert_eq!(entity.title, "OK");
@@ -91,7 +92,7 @@ mod component_tests {
     #[test]
     fn should_delete_item() {
         let store: &mut ComponentStore<u32> = &mut ComponentStore::new(123);
-        store.add(1, 456);
+        store.set(1, 456);
 
         assert_eq!(1, store.count());
         store.remove(1);

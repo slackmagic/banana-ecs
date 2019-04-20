@@ -4,7 +4,8 @@
 ### ComponentStore:
 - Store a Part type for Entities.
 
-### Part:
+### System:
+- Manage the whole system.
 
 
 ### EntityFactory: 
