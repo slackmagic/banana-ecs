@@ -1,4 +1,4 @@
-use std::any::Any;
+use std::any::{Any, TypeId};
 
 pub mod component_map;
 pub mod component_store;
@@ -15,3 +15,14 @@ pub struct Entity {
 //COMPONENT
 pub trait Component: Any {}
 impl<T: Any> Component for T {}
+
+//
+pub type StoreResult<T> = Result<T, ObjectNotFound>;
+
+//
+pub enum ObjectNotFound {
+    /// A requested entity ID was not present in the system.
+    Entity(Entity),
+    /// A requested component was not present on an entity.
+    Component(TypeId),
+}

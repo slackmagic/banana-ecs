@@ -39,15 +39,13 @@ impl System {
     }
 
     pub fn set<C: Component>(&mut self, entity: Entity, component: C) {
-        let type_of_c = &TypeId::of::<C>();
+        let type_of_c = TypeId::of::<C>();
 
         //Check if a related typed store exists.
-        if !self.contains_type_id(type_of_c) {
+        if !self.contains_type_id(&type_of_c) {
             //TODO: Define id
-            self.components.insert(
-                TypeId::of::<C>(),
-                Box::new(ComponentStore::<C>::new(UNDEFINED)),
-            );
+            self.components
+                .insert(type_of_c, Box::new(ComponentStore::<C>::new(UNDEFINED)));
         }
 
         let store: &mut ComponentStore<C> = self.get_store::<C>();
@@ -56,11 +54,25 @@ impl System {
         store.set(entity.id, component);
     }
 
-    pub fn get<C: Component>(&mut self, entity: Entity) -> Option<&mut C> {
-        let type_of_c = &TypeId::of::<C>();
+    pub fn get_mut<C: Component>(&mut self, entity: Entity) -> Option<&mut C> {
+        let type_of_c = TypeId::of::<C>();
 
         //Check if a related typed store exists.
-        if !self.contains_type_id(type_of_c) {
+        if !self.contains_type_id(&type_of_c) {
+            return None;
+        }
+
+        let store: &mut ComponentStore<C> = self.get_store::<C>();
+
+        //Get the component from the related store.
+        Some(store.get(entity.id))
+    }
+
+    pub fn get<C: Component>(&mut self, entity: Entity) -> Option<&C> {
+        let type_of_c = TypeId::of::<C>();
+
+        //Check if a related typed store exists.
+        if !self.contains_type_id(&type_of_c) {
             return None;
         }
 
