@@ -1,4 +1,3 @@
-use crate::Component;
 use std::collections::HashMap;
 
 pub struct ComponentStore<T> {
@@ -18,21 +17,31 @@ impl<T> ComponentStore<T> {
         self.id
     }
 
-    pub fn set(&mut self, entity_id: u32, entity: T) -> T {
-        *self.store.insert(entity_id, Box::new(entity)).unwrap()
+    pub fn set(&mut self, entity_id: u32, entity: T) -> Option<T> {
+        self.store
+            .insert(entity_id, Box::new(entity))
+            .and_then(|previous_comp| Some(*previous_comp))
     }
 
-    pub fn get(&mut self, entity_id: u32) -> &mut T {
-        //TODO: Send Option
-        let boxed_entity = self.store.get_mut(&entity_id).unwrap();
-        &mut *boxed_entity
+    pub fn remove(&mut self, entity_id: u32) -> Option<T> {
+        self.store
+            .remove(&entity_id)
+            .and_then(|previous_comp| Some(*previous_comp))
     }
 
-    pub fn remove(&mut self, entity_id: u32) {
-        self.store.remove(&entity_id);
+    pub fn borrow(&mut self, entity_id: u32) -> Option<&T> {
+        self.store
+            .get(&entity_id)
+            .and_then(|retrieved_comp| Some(&(**retrieved_comp)))
     }
 
-    pub fn count(&self) -> usize {
+    pub fn borrow_mut(&mut self, entity_id: u32) -> Option<&mut T> {
+        self.store
+            .get_mut(&entity_id)
+            .and_then(|retrieved_comp| Some(&mut (**retrieved_comp)))
+    }
+
+    pub fn len(&self) -> usize {
         self.store.len()
     }
 }
@@ -50,7 +59,7 @@ mod component_tests {
     #[test]
     fn should_create_component() {
         let store: ComponentStore<u32> = ComponentStore::new(123);
-        assert_eq!(store.count(), 0);
+        assert_eq!(store.len(), 0);
     }
 
     #[test]
@@ -65,7 +74,7 @@ mod component_tests {
         store.set(1, 456);
         store.set(2, 789);
 
-        assert_eq!(2, store.count());
+        assert_eq!(2, store.len());
     }
 
     #[test]
@@ -78,13 +87,13 @@ mod component_tests {
 
         store.set(1, test_entity);
 
-        let entity: &mut MyStruct = &mut store.get(1);
+        let entity: &mut MyStruct = store.borrow_mut(1).unwrap();
         assert_eq!(entity.title, "OK");
         assert_eq!(entity.value, 10);
 
         entity.title = "NEW VALUE".to_owned();
         entity.value = entity.value + 1;
-        let updated_entity: &mut MyStruct = &mut store.get(1);
+        let updated_entity: &mut MyStruct = store.borrow_mut(1).unwrap();
 
         assert_eq!(updated_entity.title, "NEW VALUE");
         assert_eq!(updated_entity.value, 11);
@@ -95,9 +104,9 @@ mod component_tests {
         let store: &mut ComponentStore<u32> = &mut ComponentStore::new(123);
         store.set(1, 456);
 
-        assert_eq!(1, store.count());
+        assert_eq!(1, store.len());
         store.remove(1);
 
-        assert_eq!(0, store.count());
+        assert_eq!(0, store.len());
     }
 }
