@@ -1,21 +1,15 @@
 # banana-ecs
 ## A home custom Entity Component System.
 
-### ComponentStore:
-- Store a Part type for Entities.
 
 ### System:
 - Manage the whole system.
+- System -> Hashmap by type -> Hashmap by Entity id.
 
+### ComponentStore:
+- Store a Component type for each Entities.
 
-### EntityFactory: 
-- Manage and organize the Entities ID store table.
-- Main rules: 
-    - A table space can be reused.
-    - An ID cannot be reused (_TODO_).
 
 ### Entity:
 - Compound by:
     - an ID generated and provided by the Factory.
-    - a byte token for determining which Part are used.
-

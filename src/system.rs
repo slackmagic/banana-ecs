@@ -31,17 +31,6 @@ impl System {
         new_entity
     }
 
-    pub fn remove_entity(&mut self, entity: &Entity) {
-        self.entities.remove(&entity.id);
-
-        //TODO: REMOVE FROM ALL STORAGE
-        for (type_id, store) in self.components.iter() {
-            unsafe {
-                store.downcast_ref();
-            }
-        }
-    }
-
     pub fn count_entities(&self) -> usize {
         self.entities.len()
     }
@@ -71,6 +60,10 @@ impl System {
             .and_then(|store| store.borrow(entity.id))
     }
 
+    pub fn get_components<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
+        self.get_store::<C>()
+    }
+
     pub fn remove<C: Component>(&mut self, entity: Entity) -> Option<C> {
         let ret = self
             .get_store::<C>()
@@ -78,6 +71,10 @@ impl System {
 
         self.clean_store::<C>();
         ret
+    }
+
+    pub fn remove_components<C: Component>(&mut self) {
+        self.components.remove(&TypeId::of::<C>());
     }
 
     pub fn count<C: Component>(&mut self) -> usize {
@@ -176,6 +173,24 @@ mod system_tests {
         assert_eq!(sys.count::<Position>(), 1);
 
         sys.remove::<Position>(ent);
+        assert_eq!(sys.count::<Position>(), 0);
+    }
+
+    #[test]
+    fn should_delete_components() {
+        let mut sys: System = System::new();
+        let ent1 = sys.new_entity();
+        let ent2 = sys.new_entity();
+
+        let pos1 = Position { x: 0, y: 0 };
+        let pos2 = Position { x: 0, y: 0 };
+        sys.set(ent1, pos1);
+        sys.set(ent2, pos2);
+
+        assert_eq!(sys.count_entities(), 2);
+        assert_eq!(sys.count::<Position>(), 2);
+
+        sys.remove_components::<Position>();
         assert_eq!(sys.count::<Position>(), 0);
     }
 }

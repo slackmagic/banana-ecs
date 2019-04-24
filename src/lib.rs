@@ -2,7 +2,6 @@ use std::any::{Any, TypeId};
 
 pub mod component_store;
 pub mod components_lib;
-pub mod entity;
 pub mod system;
 
 //ENTITY
@@ -15,10 +14,10 @@ pub struct Entity {
 pub trait Component: Any {}
 impl<T: Any> Component for T {}
 
-//
+//TODO: Clean & implement
 pub type StoreResult<T> = Result<T, ObjectNotFound>;
 
-//
+//TODO: Clean & implement
 pub enum ObjectNotFound {
     /// A requested entity ID was not present in the system.
     Entity(Entity),
