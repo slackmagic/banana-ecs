@@ -193,4 +193,22 @@ mod system_tests {
         sys.remove_components::<Position>();
         assert_eq!(sys.count::<Position>(), 0);
     }
+
+    #[test]
+    fn should_get_components() {
+        let mut sys: System = System::new();
+        let ent1 = sys.new_entity();
+        let ent2 = sys.new_entity();
+
+        let pos1 = Position { x: 0, y: 0 };
+        let pos2 = Position { x: 0, y: 0 };
+        sys.set(ent1, pos1);
+        sys.set(ent2, pos2);
+
+        assert_eq!(sys.count_entities(), 2);
+        assert_eq!(sys.count::<Position>(), 2);
+
+        let mut components = sys.get_components::<Position>().unwrap();
+        assert_eq!(components.len(), 2);
+    }
 }

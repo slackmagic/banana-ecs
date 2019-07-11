@@ -35,13 +35,11 @@ impl EntityStore {
         self.store.contains_key(&id)
     }
 
-    pub fn contains_type(self, id: u32, type_id: TypeId) -> bool {
+    pub fn contains_type(&self, id: u32, type_id: TypeId) -> bool {
         let mut is_contained: bool = false;
         if self.store.contains_key(&id) {
             let types: &Vec<TypeId> = self.store.get(&id).unwrap();
 
-            //TODO: Use below code when available
-            // types.remove_item(&type_id)
             for index in 0..types.len() {
                 if types.get(index).unwrap() == &type_id {
                     is_contained = true;
@@ -62,6 +60,10 @@ impl EntityStore {
                 if types.get(index).unwrap() == &type_id {
                     types.remove(index);
                 }
+            }
+
+            if types.len() == 0 {
+                self.store.remove_entry(&id);
             }
         }
     }
@@ -93,15 +95,27 @@ mod system_tests {
 
     #[test]
     fn should_remove_data() {
-        // unimplemented!();
-
         let mut store: EntityStore = EntityStore::new();
         let id: u32 = store.get_new_id();
 
         store.insert(id, TypeId::of::<u32>());
         store.remove(id, TypeId::of::<u32>());
 
-        assert!(!&store.contains_id(id));
         assert!(!&store.contains_type(id, TypeId::of::<u32>()));
+        assert!(!&store.contains_id(id));
+    }
+
+    #[test]
+    fn should_remove_all_data() {
+        let mut store: EntityStore = EntityStore::new();
+        let id: u32 = store.get_new_id();
+
+        store.insert(id, TypeId::of::<u32>());
+        store.insert(id, TypeId::of::<String>());
+        store.remove_all(id);
+
+        assert!(!&store.contains_type(id, TypeId::of::<u32>()));
+        assert!(!&store.contains_type(id, TypeId::of::<String>()));
+        assert!(!&store.contains_id(id));
     }
 }
