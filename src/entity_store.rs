@@ -31,7 +31,7 @@ impl EntityStore {
         }
     }
 
-    pub fn contains_id(self, id: u32) -> bool {
+    pub fn contains_id(&self, id: u32) -> bool {
         self.store.contains_key(&id)
     }
 
@@ -93,6 +93,15 @@ mod system_tests {
 
     #[test]
     fn should_remove_data() {
-        unimplemented!();
+        // unimplemented!();
+
+        let mut store: EntityStore = EntityStore::new();
+        let id: u32 = store.get_new_id();
+
+        store.insert(id, TypeId::of::<u32>());
+        store.remove(id, TypeId::of::<u32>());
+
+        assert!(!&store.contains_id(id));
+        assert!(!&store.contains_type(id, TypeId::of::<u32>()));
     }
 }
