@@ -1,4 +1,4 @@
-# banana-ecs
+# 🦀🍌📊 banana-ecs
 ## A home custom Entity Component System.
 
 
