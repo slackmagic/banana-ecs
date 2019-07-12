@@ -19,10 +19,3 @@
 ### Entity:
 - Compound by:
     - an ID generated and provided by the System.
-
-
----
-
-## TODO :
-- Remove entity management responsability from System to EntityStore.
-- Add a way to parse all particular typed component.
