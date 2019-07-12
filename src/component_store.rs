@@ -1,3 +1,5 @@
+use std::collections::hash_map::Iter;
+use std::collections::hash_map::IterMut;
 use std::collections::HashMap;
 
 pub struct ComponentStore<T> {
@@ -43,6 +45,14 @@ impl<T> ComponentStore<T> {
 
     pub fn len(&self) -> usize {
         self.store.len()
+    }
+
+    pub fn iter(&self) -> Iter<'_, u32, Box<T>> {
+        self.store.iter()
+    }
+
+    pub fn iter_mut(&mut self) -> IterMut<'_, u32, Box<T>> {
+        self.store.iter_mut()
     }
 }
 
@@ -123,10 +133,7 @@ mod component_tests {
             value: 35,
         };
 
-        store.set(1, test_entity_1);
-        store.set(2, test_entity_2);
-
-        for item in store.store.iter() {
+        for item in store.iter() {
             let id: &u32 = item.0;
             let value: &MyStruct = item.1;
             println!("{:?}:{:?}", id, value.title);

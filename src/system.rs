@@ -167,7 +167,7 @@ mod system_tests {
         assert_eq!(sys.count_entities(), 1);
         assert_eq!(sys.count::<Position>(), 1);
 
-        sys.remove_entity::<Position>(ent);
+        sys.remove::<Position>(ent);
         assert_eq!(sys.count::<Position>(), 0);
     }
 
@@ -196,14 +196,20 @@ mod system_tests {
         let ent2 = sys.new_entity();
 
         let pos1 = Position { x: 0, y: 0 };
-        let pos2 = Position { x: 0, y: 0 };
+        let pos2 = Position { x: 10, y: 20 };
         sys.set(ent1, pos1);
         sys.set(ent2, pos2);
 
         assert_eq!(sys.count_entities(), 2);
         assert_eq!(sys.count::<Position>(), 2);
 
-        let mut components = sys.get_components::<Position>().unwrap();
+        let components = sys.get_components::<Position>().unwrap();
         assert_eq!(components.len(), 2);
+
+        for component in components.iter() {
+            let id: &u32 = component.0;
+            let value: &Position = component.1;
+            println!("{:?}:{:?}", id, value);
+        }
     }
 }
