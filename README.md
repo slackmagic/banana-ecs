@@ -18,8 +18,7 @@
 
 ### Entity:
 - Compound by:
-    - an ID generated and provided by the Factory.
-    - an ID ?
+    - an ID generated and provided by the System.
 
 
 ---
