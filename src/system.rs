@@ -116,7 +116,7 @@ mod system_tests {
     #[test]
     fn should_create_entity() {
         let mut sys: System = System::new();
-        let ent: Entity = sys.new_entity();
+        let _ent: Entity = sys.new_entity();
         assert_eq!(sys.count_entities(), 1);
     }
 

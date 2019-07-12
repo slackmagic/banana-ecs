@@ -119,24 +119,4 @@ mod component_tests {
 
         assert_eq!(0, store.len());
     }
-
-    #[test]
-    fn should_parse_items() {
-        let store: &mut ComponentStore<MyStruct> = &mut ComponentStore::new(123);
-        let test_entity_1 = MyStruct {
-            title: "OK".to_owned(),
-            value: 10,
-        };
-
-        let test_entity_2 = MyStruct {
-            title: "WOOT".to_owned(),
-            value: 35,
-        };
-
-        for item in store.iter() {
-            let id: &u32 = item.0;
-            let value: &MyStruct = item.1;
-            println!("{:?}:{:?}", id, value.title);
-        }
-    }
 }
