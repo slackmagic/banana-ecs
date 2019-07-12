@@ -1,4 +1,5 @@
 use crate::component_store::ComponentStore;
+use crate::entity_store::EntityStore;
 
 use crate::{Component, Entity};
 use std::any::{Any, TypeId};
@@ -9,6 +10,7 @@ const UNDEFINED: usize = 1;
 struct System {
     current_id: u32,
     components: HashMap<TypeId, Box<Any>>,
+    entity_store: EntityStore,
     entities: HashMap<u32, Entity>,
 }
 
@@ -17,6 +19,7 @@ impl System {
         System {
             current_id: 0,
             components: HashMap::new(),
+            entity_store: EntityStore::new(),
             entities: HashMap::new(),
         }
     }

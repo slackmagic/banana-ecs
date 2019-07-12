@@ -15,6 +15,7 @@ impl EntityStore {
     }
 
     pub fn get_new_id(&mut self) -> u32 {
+        //TODO: RECYCLE ID
         self.current_id += 1;
         self.current_id
     }
