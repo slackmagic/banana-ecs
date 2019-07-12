@@ -8,7 +8,6 @@ use std::collections::HashMap;
 const UNDEFINED: usize = 1;
 
 struct System {
-    current_id: u32,
     components: HashMap<TypeId, Box<Any>>,
     entity_store: EntityStore,
     entities: HashMap<u32, Entity>,
@@ -17,7 +16,6 @@ struct System {
 impl System {
     pub fn new() -> System {
         System {
-            current_id: 0,
             components: HashMap::new(),
             entity_store: EntityStore::new(),
             entities: HashMap::new(),
@@ -25,17 +23,14 @@ impl System {
     }
 
     pub fn new_entity(&mut self) -> Entity {
-        self.current_id += 1;
         let new_entity: Entity = Entity {
-            id: self.current_id,
+            id: self.entity_store.get_new_id(),
         };
-
-        self.entities.insert(new_entity.id, new_entity);
         new_entity
     }
 
     pub fn count_entities(&self) -> usize {
-        self.entities.len()
+        self.entity_store.count()
     }
 
     pub fn set<C: Component>(&mut self, entity: Entity, component: C) -> Option<C> {

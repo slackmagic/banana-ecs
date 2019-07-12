@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 pub struct EntityStore {
     current_id: u32,
+    count_entities: usize,
     store: HashMap<u32, Vec<TypeId>>,
 }
 
@@ -10,6 +11,7 @@ impl EntityStore {
     pub fn new() -> EntityStore {
         EntityStore {
             current_id: 0,
+            count_entities: 0,
             store: HashMap::new(),
         }
     }
@@ -17,6 +19,7 @@ impl EntityStore {
     pub fn get_new_id(&mut self) -> u32 {
         //TODO: RECYCLE ID
         self.current_id += 1;
+        self.count_entities += 1;
         self.current_id
     }
 
@@ -30,6 +33,10 @@ impl EntityStore {
             vec_to_insert.push(type_id);
             self.store.insert(id, vec_to_insert);
         }
+    }
+
+    pub fn count(&self) -> usize {
+        self.count_entities
     }
 
     pub fn contains_id(&self, id: u32) -> bool {
@@ -71,6 +78,7 @@ impl EntityStore {
 
     pub fn remove_all(&mut self, id: u32) {
         self.store.remove(&id);
+        self.count_entities -= 1;
     }
 }
 
@@ -81,7 +89,8 @@ mod system_tests {
     #[test]
     fn should_create_store() {
         let mut store: EntityStore = EntityStore::new();
-        assert_eq!(store.get_new_id(), 1);
+        assert_eq!(&store.get_new_id(), &1);
+        assert_eq!(&store.count(), &1);
     }
 
     #[test]
@@ -92,6 +101,7 @@ mod system_tests {
         store.insert(id, TypeId::of::<u32>());
         assert!(&store.contains_id(id));
         assert!(&store.contains_type(id, TypeId::of::<u32>()));
+        assert_eq!(&store.count(), &1);
     }
 
     #[test]
