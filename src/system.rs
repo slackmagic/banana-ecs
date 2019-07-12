@@ -10,7 +10,6 @@ const UNDEFINED: usize = 1;
 struct System {
     components: HashMap<TypeId, Box<Any>>,
     entity_store: EntityStore,
-    entities: HashMap<u32, Entity>,
 }
 
 impl System {
@@ -18,7 +17,6 @@ impl System {
         System {
             components: HashMap::new(),
             entity_store: EntityStore::new(),
-            entities: HashMap::new(),
         }
     }
 
@@ -87,7 +85,6 @@ impl System {
     }
 
     fn get_store<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
-        //TODO: Safely Unwrap
         //TODO: Manage error
         self.components
             .get_mut(&TypeId::of::<C>())
@@ -170,7 +167,7 @@ mod system_tests {
         assert_eq!(sys.count_entities(), 1);
         assert_eq!(sys.count::<Position>(), 1);
 
-        sys.remove::<Position>(ent);
+        sys.remove_entity::<Position>(ent);
         assert_eq!(sys.count::<Position>(), 0);
     }
 
