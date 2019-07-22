@@ -212,4 +212,64 @@ mod system_tests {
             println!("{:?}:{:?}", id, value);
         }
     }
+
+    use std::any::Any;
+    use std::collections::HashMap;
+
+    #[test]
+    fn base_test() {
+        //SET BASE STORE
+        //-----------------------------------------------------------
+        let mut store_u32: HashMap<u32, Box<u32>> = HashMap::new();
+
+        store_u32.insert(1, Box::new(26));
+        store_u32.insert(2, Box::new(12));
+        store_u32.insert(3, Box::new(80));
+
+        let mut store_string: HashMap<u32, Box<String>> = HashMap::new();
+
+        store_string.insert(10, Box::new("Laurent".to_string()));
+        store_string.insert(20, Box::new("Laure".to_string()));
+        store_string.insert(30, Box::new("Louise".to_string()));
+        store_string.insert(40, Box::new("Capucine".to_string()));
+
+        println!("u32 len: {}", store_u32.len());
+        println!("str len: {}", store_string.len());
+
+        //SET COMPONENT STORE
+        //-----------------------------------------------------------
+        let mut components: HashMap<u32, Box<Any>> = HashMap::new();
+        let mut single_value: u32 = 123456;
+
+        components.insert(0, Box::new(single_value));
+        components.insert(100, Box::new(store_u32));
+        components.insert(200, Box::new(store_string));
+
+        println!("cmp len: {}", components.len());
+
+        //TESTING ZONE
+        //-----------------------------------------------------------
+        let boxed_u32: &Box<Any> = &components.into_mut(&0).unwrap();
+        let boxed_res_u32: &Box<Any> = &components.get(&100).unwrap();
+        let boxed_res_str: &Box<Any> = &components.get(&200).unwrap();
+
+        println!("box_u32_cmp: {:?}", boxed_res_u32);
+        println!("box_str_cmp: {:?}", boxed_res_str);
+
+        //let tmp_res_u32 = *boxed_res_u32;
+        //.downcast::<HashMap<u32, Box<u32>>>();
+        // let res_str = &boxed_res_str.downcast::<HashMap<u32, Box<String>>>();
+
+        let tmp: &mut u32 = boxed_u32.downcast_mut::<u32>().unwrap();
+        let mut new_value: u32 = 987654;
+
+        println!("u32_single: {:?}", tmp);
+        tmp = &mut 987654;
+        println!("u32_single: {:?}", tmp);
+        let tmp = boxed_u32.downcast_ref::<u32>().unwrap();
+        println!("u32_single: {:?}", tmp);
+        // println!("u32_cmp: {:?}", res_u32);
+        // println!("str_cmp: {:?}", res_str);
+    }
+
 }
