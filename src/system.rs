@@ -42,27 +42,31 @@ impl System {
         }
 
         //Insert the component into the related store.
-        self.get_store::<C>()
+        self.get_mut_store::<C>()
             .and_then(|store| store.set(entity.id, component))
     }
 
     pub fn get_mut<C: Component>(&mut self, entity: Entity) -> Option<&mut C> {
-        self.get_store::<C>()
+        self.get_mut_store::<C>()
             .and_then(|store| store.borrow_mut(entity.id))
     }
 
     pub fn get<C: Component>(&mut self, entity: Entity) -> Option<&C> {
-        self.get_store::<C>()
+        self.get_mut_store::<C>()
             .and_then(|store| store.borrow(entity.id))
     }
 
-    pub fn get_components<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
-        self.get_store::<C>()
+    pub fn get_mut_components<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
+        self.get_mut_store::<C>()
+    }
+
+    pub fn get_component<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
+        self.get_mut_store::<C>()
     }
 
     pub fn remove<C: Component>(&mut self, entity: Entity) -> Option<C> {
         let ret = self
-            .get_store::<C>()
+            .get_mut_store::<C>()
             .and_then(|store| store.remove(entity.id));
 
         self.clean_store::<C>();
@@ -75,7 +79,7 @@ impl System {
 
     pub fn count<C: Component>(&mut self) -> usize {
         //TODO: Manage error
-        self.get_store::<C>()
+        self.get_mut_store::<C>()
             .and_then(|store| Some(store.len()))
             .unwrap_or(0)
     }
@@ -84,7 +88,7 @@ impl System {
         self.components.contains_key(id)
     }
 
-    fn get_store<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
+    fn get_mut_store<C: Component>(&mut self) -> Option<&mut ComponentStore<C>> {
         //TODO: Manage error
         self.components
             .get_mut(&TypeId::of::<C>())
@@ -94,7 +98,7 @@ impl System {
     }
 
     fn clean_store<C: Component>(&mut self) {
-        let store = self.get_store::<C>().unwrap();
+        let store = self.get_mut_store::<C>().unwrap();
         if store.len() == 0 {
             self.components.remove(&TypeId::of::<C>());
         }
@@ -190,7 +194,7 @@ mod system_tests {
     }
 
     #[test]
-    fn should_get_components() {
+    fn should_iter_mut_on_components() {
         let mut sys: System = System::new();
         let ent1 = sys.new_entity();
         let ent2 = sys.new_entity();
@@ -209,7 +213,7 @@ mod system_tests {
         {
             //Check/Update Position components
             //--------------------------------------------------------------
-            let components = sys.get_components::<Position>().unwrap();
+            let components = sys.get_mut_components::<Position>().unwrap();
             assert_eq!(components.len(), 2);
 
             for component in components.iter_mut() {
@@ -225,7 +229,7 @@ mod system_tests {
         {
             //Check/Update Velocity components
             //--------------------------------------------------------------
-            let components = sys.get_components::<Velocity>().unwrap();
+            let components = sys.get_mut_components::<Velocity>().unwrap();
             assert_eq!(components.len(), 1);
 
             for component in components.iter_mut() {
@@ -240,7 +244,7 @@ mod system_tests {
         {
             //Check Position components
             //--------------------------------------------------------------
-            let components = sys.get_components::<Position>().unwrap();
+            let components = sys.get_mut_components::<Position>().unwrap();
             assert_eq!(components.len(), 2);
 
             for component in components.iter() {
@@ -253,7 +257,7 @@ mod system_tests {
         {
             //Check Velocity components
             //--------------------------------------------------------------
-            let components = sys.get_components::<Velocity>().unwrap();
+            let components = sys.get_mut_components::<Velocity>().unwrap();
             assert_eq!(components.len(), 1);
 
             for component in components.iter() {
