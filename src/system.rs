@@ -7,7 +7,7 @@ use std::collections::HashMap;
 
 const UNDEFINED: usize = 1;
 
-struct System {
+pub struct System {
     components: HashMap<TypeId, Box<Any>>,
     entity_store: EntityStore,
 }
